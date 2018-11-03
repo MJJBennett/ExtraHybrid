@@ -30,6 +30,10 @@ int main(int argc, char *argv[]) {
                     switch (event.key.code) {
                         case sf::Keyboard::A:
                             l.write(Message("Pressed A"));
+                        case sf::Keyboard::Escape:
+                            l.write(Message(Message::close(Message::key_pressed("Escape").string())));
+                            w.close();
+                            continue;
                         default:
                             continue;
                     }

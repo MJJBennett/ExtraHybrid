@@ -15,6 +15,13 @@ bool create_directories(const std::string &full_path, std::string delim = "/");
 
 class Message {
 public:
+    static inline Message close(std::string reason = "") {
+        return Message("Closing application.", (reason.empty()) ? "" : " Reason: \n\t" + std::move(reason) + ".");
+    }
+    static inline Message key_pressed(std::string key) {
+        return Message("Key pressed: ", std::move(key));
+    }
+public:
     template<typename... Ts>
     explicit Message(Ts... messages) {
         std::ostringstream ss;
@@ -45,7 +52,7 @@ class Logger {
 public:
     Logger(std::string logfile, T &stream, int stream_freq = 0) : logfile_(std::move(logfile)),
                                                                   stream_freq_(stream_freq),
-                                                                                stream_(stream) {}
+                                                                  stream_(stream) {}
 
 
     bool write_header() {
@@ -55,7 +62,7 @@ public:
 
     // Ideally, in the future all these methods (in all classes) would return an std::optional<Message>
     bool write(Message message) {
-        if (stream_freq_ == 0) stream(message.string());
+        if (stream_freq_ == 0) stream(message.string(), true);
 
         buffer_.push_back(std::move(message));
 
@@ -63,34 +70,41 @@ public:
             while (stream_counter_ < buffer_.size()) {
                 stream(buffer_.at(stream_counter_++).string());
             }
+            flush_stream();
             streamed_since_reset_ = 0;
-        }
-        else {
+        } else {
             streamed_since_reset_++;
         }
 
         return false;
     }
 
-    void stream(std::string str) {
-        stream_ << str << std::endl;
+    void stream(std::string str, bool flush = false) {
+        stream_ << str << '\n';
+        if (flush) flush_stream();
+    }
+
+    void flush_stream() {
+        stream_ << std::flush;
     }
 
     bool flush() {
         bool err = false;
-        if (!logfile_.empty()) {
+        if (!logfile_.empty() && !buffer_.empty()) {
             std::ofstream f(logfile_, std::fstream::out | std::fstream::app);
             if (!f.good()) err = true;
             else {
                 for (auto &&message : buffer_) {
-                    f << message.string() << std::endl;
+                    f << message.string() << '\n';
                 }
+                f << std::flush;
             }
         }
         if (stream_freq_ < 0) {
             for (auto &&message : buffer_) {
                 stream(message.string());
             }
+            flush_stream();
         }
         buffer_.clear();
         return err;
