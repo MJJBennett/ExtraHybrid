@@ -4,38 +4,34 @@
 #include <iostream>
 #include <string>
 
-int main(int argc, char * argv[]) {
-    //Create a window
-    sf::RenderWindow w(sf::VideoMode(800, 600), "Example Window");
-    Logger l("something.txt", ::std::cout);
-    l.write(Message("Hi!"));
-    l.flush(false);
+int main(int argc, char *argv[]) {
+    // Create a directory for logging
+    create_directories("logging");
+    // Create a logger
+    Logger l("logging/log.txt", ::std::cout, true);
+    // Let the user know we're initializing
+    l.write_header();
+    l.write(Message("Launching application."));
 
-    //Main loop
+    // Create a window
+    sf::RenderWindow w(sf::VideoMode(800, 600), "Example Window");
 
     while (w.isOpen()) {
-
-        //Basic event loop
-        sf::Event e{};
-        while (w.pollEvent(e)) {
-            switch(e.type) {
-                case sf::Event::Resized: w.setView(sf::View(sf::FloatRect(0, 0, e.size.width, e.size.height)));
+        sf::Event event{};
+        while (w.pollEvent(event)) {
+            switch (event.type) {
+                case sf::Event::Resized:
+                    w.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                     continue;
-                case sf::Event::Closed:  w.close();
+                case sf::Event::Closed:
+                    w.close();
+                    continue;
+                default:
                     continue;
             }
         }
-
-        //Do logical updates here
-
         w.clear(sf::Color::Black);
-
-        //Draw here with w.draw(//drawable)
-
         w.display();
-
     }
-    //Ensure the window is closed
     w.close();
-
 }

@@ -11,6 +11,8 @@ bool is_file(std::string filename);
 
 std::string get_filename(const std::string &filein);
 
+bool create_directories(const std::string &full_path, std::string delim = "/");
+
 class Message {
 public:
     template<typename... Ts>
@@ -41,33 +43,27 @@ private:
 template<typename T>
 class Logger {
 public:
-    Logger(std::string logfile, T &stream, bool stream_only_on_flush = false) : logfile_(std::move(logfile)),
-                                                                                 auto_stream_(stream_only_on_flush),
-                                                                                 stream_(stream) {}
+    Logger(std::string logfile, T &stream, bool auto_stream = false) : logfile_(std::move(logfile)),
+                                                                                auto_stream_(auto_stream),
+                                                                                stream_(stream) {}
 
+    // Ideally, in the future all these classes would return an std::optional<Message>
     bool write(Message message) {
         if (auto_stream_) stream_ << message.string() << std::endl;
         buffer_.push_back(std::move(message));
         return false;
     }
 
-    bool flush(bool overwrite = false) {
+    bool flush() {
         bool err = false;
         if (!logfile_.empty()) {
-            if (is_file(get_filename(logfile_)) && !overwrite) err = true;
+            std::ofstream f(logfile_, std::fstream::out | std::fstream::app);
+            if (!f.good()) err = true;
             else {
-                std::ofstream f(logfile_);
-                if (!f.good())
-                {
-                    err = true;
-                }
-                else {
-                    for (auto &&message : buffer_) {
-                        f << message.string() << std::endl;
-                    }
+                for (auto &&message : buffer_) {
+                    f << message.string() << std::endl;
                 }
             }
-
         }
         if (!auto_stream_) {
             for (auto &&message : buffer_) {
@@ -77,6 +73,13 @@ public:
         buffer_.clear();
         return err;
     }
+
+    bool write_header() {
+        return write(Message("--------------------------\n",
+                             "Logging started at: [TIME]"));
+    }
+
+    ~Logger() { flush(); }
 
 private:
     std::string logfile_;
