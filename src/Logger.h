@@ -43,15 +43,37 @@ private:
 template<typename T>
 class Logger {
 public:
-    Logger(std::string logfile, T &stream, bool auto_stream = false) : logfile_(std::move(logfile)),
-                                                                                auto_stream_(auto_stream),
+    Logger(std::string logfile, T &stream, int stream_freq = 0) : logfile_(std::move(logfile)),
+                                                                  stream_freq_(stream_freq),
                                                                                 stream_(stream) {}
 
-    // Ideally, in the future all these classes would return an std::optional<Message>
+
+    bool write_header() {
+        return write(Message("--------------------------\n",
+                             "Logging started at: [TIME]"));
+    }
+
+    // Ideally, in the future all these methods (in all classes) would return an std::optional<Message>
     bool write(Message message) {
-        if (auto_stream_) stream_ << message.string() << std::endl;
+        if (stream_freq_ == 0) stream(message.string());
+
         buffer_.push_back(std::move(message));
+
+        if (stream_freq_ > 0 && streamed_since_reset_ > 0 && streamed_since_reset_ % stream_freq_ == 0) {
+            while (stream_counter_ < buffer_.size()) {
+                stream(buffer_.at(stream_counter_++).string());
+            }
+            streamed_since_reset_ = 0;
+        }
+        else {
+            streamed_since_reset_++;
+        }
+
         return false;
+    }
+
+    void stream(std::string str) {
+        stream_ << str << std::endl;
     }
 
     bool flush() {
@@ -65,25 +87,22 @@ public:
                 }
             }
         }
-        if (!auto_stream_) {
+        if (stream_freq_ < 0) {
             for (auto &&message : buffer_) {
-                stream_ << message.string() << std::endl;
+                stream(message.string());
             }
         }
         buffer_.clear();
         return err;
     }
 
-    bool write_header() {
-        return write(Message("--------------------------\n",
-                             "Logging started at: [TIME]"));
-    }
-
     ~Logger() { flush(); }
 
 private:
     std::string logfile_;
-    bool auto_stream_;
+    int stream_freq_;
+    size_t stream_counter_ = 0;
+    size_t streamed_since_reset_ = 0;
     T &stream_;
     std::vector<Message> buffer_;
 };

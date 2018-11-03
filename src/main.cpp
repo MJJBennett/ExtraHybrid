@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
     // Create a directory for logging
     create_directories("logging");
     // Create a logger
-    Logger l("logging/log.txt", ::std::cout, true);
+    Logger l("logging/log.txt", ::std::cout, 0);
     // Let the user know we're initializing
     l.write_header();
     l.write(Message("Launching application."));
@@ -26,6 +26,13 @@ int main(int argc, char *argv[]) {
                 case sf::Event::Closed:
                     w.close();
                     continue;
+                case sf::Event::KeyReleased:
+                    switch (event.key.code) {
+                        case sf::Keyboard::A:
+                            l.write(Message("Pressed A"));
+                        default:
+                            continue;
+                    }
                 default:
                     continue;
             }
