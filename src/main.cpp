@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Logger.h"
 #include <iostream>
+#include <string>
 
 int main(int argc, char * argv[]) {
     //Create a window
