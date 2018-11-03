@@ -10,6 +10,8 @@ link_directories(${CMAKE_SOURCE_DIR}/include/SFML-2.4.2/lib/)
 
 add_executable(NovemberGameJam
         src/main.cpp
+        src/Resource.cpp src/Resource.h
+        src/ResourceManager.cpp src/ResourceManager.h
         src/EventManager.h src/EventManager.cpp
         src/Logger.cpp src/Logger.h
         src/App.cpp src/App.h)

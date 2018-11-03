@@ -18,6 +18,7 @@ void App::loop() {
     sf::Event event{};
     while (w.pollEvent(event)) process_event(event);
     w.clear(sf::Color::Black);
+    for (auto&& sprite: r.sprites) w.draw(sprite);
     w.display();
 }
 
@@ -41,6 +42,8 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
     switch (key) {
         case sf::Keyboard::A:
             logger_.write(Message("Pressed A"));
+            r.sprites.push_back(r.get_sprite("../resources/test.jpg"));
+            r.sprites.back().setPosition(5 * r.sprites.size(), 0);
             return;
         case sf::Keyboard::Escape:
             // This is beautiful and I won't let you tell me it isn't.
