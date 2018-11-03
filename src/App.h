@@ -14,6 +14,8 @@ public:
     void run();
 private:
     void loop();
+    void process_event(const sf::Event& event);
+    void process_key_event(const sf::Keyboard::Key& key);
     Logger<std::ostream> logger_;
     sf::RenderWindow w;
 };
