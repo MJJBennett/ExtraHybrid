@@ -33,9 +33,10 @@ ResourceManager::Multi_Fail ResourceManager::load_from_file(std::string path) {
     Multi_Fail fails;
     for (auto &&key : json) {
         if (key.find("type") != key.end() && key.find("path") != key.end()) {
-            if (!load_type_safe(std::string(key.at("type")), key.at("path"))) {
+            std::string res_path = "../resources/" + std::string(key.at("path"));
+            if (!load_type_safe(std::string(key.at("type")), res_path)) {
                 fails.num_fails++;
-                logger_.write(Message("Could not load texture ", key.at("path"),
+                logger_.write(Message("Could not load texture ", res_path,
                                       " listed in file ", path, '.'));
             }
         } else logger_.write(Message("Could not find type/path for key ", std::string(key), " in file ", path, '.'));

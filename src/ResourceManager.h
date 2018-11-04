@@ -24,6 +24,7 @@ public:
 
     // Loads resources from a file. Assumes json format. Returns Multi_Fail object.
     // Is always safe. For... obvious reasons.
+    // Paths are pre-pended with "../resources/"
     Multi_Fail load_from_file(std::string path);
 private:
     // Returns true if the texture is loaded, false otherwise.

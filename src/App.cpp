@@ -48,7 +48,7 @@ void App::process_event(const sf::Event &event) {
 void App::process_key_event(const sf::Keyboard::Key &key) {
     switch (key) {
         case sf::Keyboard::A:
-            logger_.write(Message("Pressed A"));
+            logger_.write(Message::key_pressed("A"));
             r.sprites.push_back(r.get_sprite("../resources/test.jpg"));
             r.sprites.back().setPosition(5 * r.sprites.size(), 0);
             return;
