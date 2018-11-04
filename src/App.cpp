@@ -52,6 +52,11 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
             r.sprites.push_back(r.get_sprite("../resources/test.jpg"));
             r.sprites.back().setPosition(5 * r.sprites.size(), 0);
             return;
+        case sf::Keyboard::B:
+            logger_.write(Message::key_pressed("B"));
+            r.sprites.push_back(r.get_sprite("../resources/Player.1.png"));
+            r.sprites.back().setPosition(5 * r.sprites.size(), 60 + 32 * r.sprites.size());
+            return;
         case sf::Keyboard::Escape:
             // This is beautiful and I won't let you tell me it isn't.
             logger_.write(Message(Message::close(Message::key_pressed("Escape").string())));

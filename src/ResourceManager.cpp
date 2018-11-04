@@ -36,12 +36,9 @@ ResourceManager::Multi_Fail ResourceManager::load_from_file(std::string path) {
             if (!load_type_safe(std::string(key.at("type")), key.at("path"))) {
                 fails.num_fails++;
                 logger_.write(Message("Could not load texture ", key.at("path"),
-                                      " listened in file ", path, '.'));
+                                      " listed in file ", path, '.'));
             }
-        }
-        else {
-            logger_.write(Message("Could not find type/path for key ", std::string(key), " in file ", path, '.'));
-        }
+        } else logger_.write(Message("Could not find type/path for key ", std::string(key), " in file ", path, '.'));
     }
     return fails;
 }
