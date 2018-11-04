@@ -1,0 +1,10 @@
+{
+  "test_texture_1": {
+    "type": "texture",
+    "path": "test.jpg"
+  },
+  "Player_1": {
+    "type": "texture",
+    "path": "Player.1.png"
+  }
+}
