@@ -8,6 +8,13 @@ void App::initialize() {
     logger_.write(Message("Launching application."));
     // Create a window.
     w.create(sf::VideoMode(800, 600), "ExtraHybrid");
+    // Preload textures.
+    ResourceManager::Multi_Fail status;
+    std::string core_resources_file = "../resources/core.json";
+    logger_.write(Message("Loading core resources from ", core_resources_file, '.'));
+    if (!(status = r.load_from_file(core_resources_file))) {
+        logger_.write(Message("Failed to load ", status.num_fails, " thing", status.num_fails > 1 ? "s " : " ", "from core resources file."));
+    }
 }
 
 void App::run() {
