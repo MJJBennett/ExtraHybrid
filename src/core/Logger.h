@@ -6,10 +6,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-
-bool is_file(std::string filename);
-
-std::string get_filename(const std::string &filein);
+#include <iomanip>
+#include <ctime>
 
 bool create_directories(const std::string &full_path, std::string delim = "/");
 
@@ -18,9 +16,11 @@ public:
     static inline Message close(std::string reason = "") {
         return Message("Closing application.", (reason.empty()) ? "" : " Reason: \n\t" + std::move(reason) + ".");
     }
+
     static inline Message key_pressed(std::string key) {
         return Message("Key pressed: ", std::move(key));
     }
+
 public:
     template<typename... Ts>
     explicit Message(Ts... messages) {
@@ -52,26 +52,39 @@ class Logger {
 public:
     Logger(std::string logfile, T &stream, int stream_freq = 0) : logfile_(std::move(logfile)),
                                                                   stream_freq_(stream_freq),
-                                                                  stream_(stream) {}
-
+                                                                  stream_(stream),
+                                                                  no_log_(logfile.empty()) {}
 
     bool write_header() {
+        auto time = std::time(nullptr);
         return write(Message("--------------------------\n",
-                             "Logging started at: [TIME]"));
+                             "Logging started at: ",
+                             std::put_time(std::localtime(&time),
+                                           "%d-%m-%Y %H:%M:%S")));
     }
 
     // Ideally, in the future all these methods (in all classes) would return an std::optional<Message>
     bool write(Message message) {
+        // If we stream every message, just write it out.
         if (stream_freq_ == 0) stream(message.string(), true);
 
-        buffer_.push_back(std::move(message));
+        // If we need a buffer to stream, or we are logging, add the message to the buffer.
+        if (stream_freq_ > 0 || !no_log_) buffer_.push_back(std::move(message));
 
+        // If we stream every stream_freq_ messages, check if we've hit that number, then stream the buffer subsection.
         if (stream_freq_ > 0 && streamed_since_reset_ > 0 && streamed_since_reset_ % stream_freq_ == 0) {
             while (stream_counter_ < buffer_.size()) {
                 stream(buffer_.at(stream_counter_++).string());
             }
             flush_stream();
             streamed_since_reset_ = 0;
+
+            // If we don't log, just empty the buffer now.
+            if (no_log_) {
+                // Make sure to make the counter 0 again.
+                stream_counter_ = 0;
+                buffer_.clear();
+            }
         } else {
             streamed_since_reset_++;
         }
@@ -117,6 +130,7 @@ private:
     int stream_freq_;
     size_t stream_counter_ = 0;
     size_t streamed_since_reset_ = 0;
+    bool no_log_;
     T &stream_;
     std::vector<Message> buffer_;
 };

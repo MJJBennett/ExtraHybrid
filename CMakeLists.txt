@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(NovemberGameJam)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined") # ubsan
 
 include_directories(${CMAKE_SOURCE_DIR}/include/SFML-2.4.2/include/)
 link_directories(${CMAKE_SOURCE_DIR}/include/SFML-2.4.2/lib/)
@@ -12,13 +12,19 @@ link_directories(${CMAKE_SOURCE_DIR}/include/SFML-2.4.2/lib/)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(${CMAKE_SOURCE_DIR}/include/json/json)
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/tests/tests_core/tests_logging)
+
 add_executable(NovemberGameJam
-        src/main.cpp
-        src/Resource.cpp src/Resource.h
-        src/ResourceManager.cpp src/ResourceManager.h
-        src/EventManager.h src/EventManager.cpp
-        src/Logger.cpp src/Logger.h
-        src/App.cpp src/App.h)
+        # Core code
+        src/core/main.cpp
+        src/core/Logger.cpp src/core/Logger.h
+        src/core/App.cpp src/core/App.h
+        # Resource / resource management
+        src/resources/Resource.cpp src/resources/Resource.h
+        src/resources/ResourceManager.cpp src/resources/ResourceManager.h
+        # Game objects
+        src/objects/GameObject.cpp src/objects/GameObject.h
+        )
 
 if (WIN32)
 

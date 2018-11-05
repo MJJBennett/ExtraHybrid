@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include "Resource.h"
-#include "Logger.h"
+#include "../core/Logger.h"
 
 class ResourceManager {
 public:

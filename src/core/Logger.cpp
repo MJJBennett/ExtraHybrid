@@ -1,16 +1,6 @@
 #include "Logger.h"
-#include <sys/stat.h>
-#include <ctime>
 #include <experimental/filesystem>
 
-bool is_file(std::string filename) {
-    struct stat buf{};
-    return (stat(filename.c_str(), &buf) == 0);
-}
-
-std::string get_filename(const std::string &filein) {
-    return std::string(filein);
-}
 
 bool create_directories(const std::string &full_path, std::string delim) {
     namespace fs = std::experimental::filesystem;
@@ -44,3 +34,4 @@ bool create_directories(const std::string &full_path, std::string delim) {
 
     return created_dirs;
 }
+
