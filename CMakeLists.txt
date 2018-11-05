@@ -24,7 +24,7 @@ add_executable(NovemberGameJam
         src/resources/ResourceManager.cpp src/resources/ResourceManager.h
         # Game objects
         src/objects/GameObject.cpp src/objects/GameObject.h
-        )
+        src/objects/components/PhysicsRect.cpp src/objects/components/PhysicsRect.h)
 
 if (WIN32)
 
