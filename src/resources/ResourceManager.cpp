@@ -63,5 +63,8 @@ bool ResourceManager::give_sprite(GameObject &object, std::string path) {
         object.set_sprite_texture(get_texture(path));
         return true;
     }
-    return false;
+    else {
+        logger_.write(Message("Could not add texture ", path, " to sprite."));
+        return false;
+    }
 }

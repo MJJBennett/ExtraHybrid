@@ -62,9 +62,11 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
             r.sprites.back().setPosition(5 * r.sprites.size(), 60 + 32 * r.sprites.size());
             return;
         case sf::Keyboard::C:
+            logger_.write(Message::key_pressed("C"));
             state_.toggle(state_.t_draw_resource_manager);
             return;
         case sf::Keyboard::D: {
+            logger_.write(Message::key_pressed("D"));
             GameObject obj(PhysicsRect({5, 10, 15, 20}));
             r.give_sprite(obj, "../resources/Player.1.png");
             o.add_object(obj);
