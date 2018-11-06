@@ -7,6 +7,7 @@
 class GameObject : public sf::Drawable {
 public:
     explicit GameObject(PhysicsRect rect = PhysicsRect()) : rect_(rect) {}
+    void set_sprite_texture(sf::Texture* texture) { sprite_.setTexture(*texture); }
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
         target.draw(sprite_, states);

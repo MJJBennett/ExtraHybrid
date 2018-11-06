@@ -1,16 +1,17 @@
 #include "ResourceManager.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include "objects/GameObject.h"
 
 sf::Sprite ResourceManager::get_sprite(std::string path) {
     sf::Texture *texture = nullptr;
     // This is also beautiful.
-    if (loaded_resources.find(path) != loaded_resources.end() || load_texture(path)) {
+    if (has_texture(path) || load_texture(path)) {
         texture = loaded_resources.at(path).get_texture();
     }
     sf::Sprite sprite;
     if (texture) sprite.setTexture(*texture);
-    return std::move(sprite);
+    return sprite;
 }
 
 bool ResourceManager::load_texture(std::string path) {
@@ -55,4 +56,12 @@ bool ResourceManager::load_type_safe(Resource::Type type, std::string path) {
         default:
             return false;
     }
+}
+
+bool ResourceManager::give_sprite(GameObject &object, std::string path) {
+    if (has_texture(path) || load_texture(path)) {
+        object.set_sprite_texture(get_texture(path));
+        return true;
+    }
+    return false;
 }

@@ -7,6 +7,13 @@
 #include "Resource.h"
 #include "../core/Logger.h"
 
+class GameObject;
+
+/**
+ * This class's function naming schemes are very simple.
+ * Functions marked with _safe check for safety-related things.
+ * Others do not.
+ */
 class ResourceManager {
 public:
     struct Multi_Fail {
@@ -26,11 +33,23 @@ public:
     // Is always safe. For... obvious reasons.
     // Paths are pre-pended with "../resources/"
     Multi_Fail load_from_file(std::string path);
+
+    bool give_sprite(GameObject& object, std::string path);
+
+    inline bool has_texture(const std::string path) {
+        return loaded_resources.find(path) != loaded_resources.end();
+    }
+
+
 private:
     // Returns true if the texture is loaded, false otherwise.
     bool load_texture(std::string path);
     bool load_type_safe(std::string type, std::string path);
     bool load_type_safe(Resource::Type type, std::string path);
+    // Returns a pointer to the texture.
+    inline sf::Texture* get_texture(const std::string path) {
+        return loaded_resources.at(path).get_texture();
+    }
     Logger<std::ostream>& logger_;
     std::unordered_map<std::string, Resource> loaded_resources;
 };
