@@ -36,7 +36,7 @@ add_executable(NovemberGameJam
         src/objects/GameObject.cpp src/objects/GameObject.h
         src/objects/components/PhysicsRect.cpp src/objects/components/PhysicsRect.h
         src/objects/ObjectManager.cpp src/objects/ObjectManager.h
-        src/objects/Player.cpp src/objects/Player.h)
+        src/objects/Player.cpp src/objects/Player.h src/core/Controls.cpp src/core/Controls.h)
 
 # Link the project (system dependant)
 if (WIN32)
