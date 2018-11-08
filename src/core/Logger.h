@@ -1,3 +1,5 @@
+#include <utility>
+
 #ifndef NOVEMBERGAMEJAM_LOGGING_H
 #define NOVEMBERGAMEJAM_LOGGING_H
 
@@ -19,6 +21,10 @@ public:
 
     static inline Message key_pressed(std::string key) {
         return Message("Key pressed: ", std::move(key));
+    }
+
+    static inline Message warning(std::string message) {
+        return Message("Warning: ", std::move(message));
     }
 
 public:

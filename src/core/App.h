@@ -6,16 +6,21 @@
 #include <iostream>
 #include "../resources/ResourceManager.h"
 #include "objects/ObjectManager.h"
+#include "Controls.h"
 
 struct State {
-    bool toggle(bool& var) { var = !var; return var; }
+    bool toggle(bool &var) {
+        var = !var;
+        return var;
+    }
 
     bool t_draw_resource_manager = false;
 };
 
 class App {
 public:
-    explicit App(std::ostream &log_buffer) : logger_("logging/log.txt", log_buffer, 0), r(logger_), o(logger_) {}
+    explicit App(std::ostream &log_buffer) : logger_("logging/log.txt", log_buffer, 0), r(logger_), o(logger_),
+                                             c(logger_) {}
 
     ~App();
 
@@ -39,6 +44,7 @@ private:
     ObjectManager o;
     sf::RenderWindow w;
     ResourceManager r;
+    Controls c;
 
     State state_;
 };

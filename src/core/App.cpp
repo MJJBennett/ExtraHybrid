@@ -1,3 +1,4 @@
+#include <objects/Player.h>
 #include "App.h"
 
 void App::initialize() {
@@ -52,9 +53,7 @@ void App::process_event(const sf::Event &event) {
 void App::process_key_event(const sf::Keyboard::Key &key) {
     switch (key) {
         case sf::Keyboard::A:
-            logger_.write(Message::key_pressed("A"));
-            //r.sprites.push_back(r.get_sprite("../resources/test.jpg"));
-            //r.sprites.back().setPosition(5 * r.sprites.size(), 0);
+            c.execute(key);
             return;
         case sf::Keyboard::B:
             logger_.write(Message::key_pressed("B"));
@@ -70,6 +69,21 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
             GameObject obj(PhysicsRect({5, 10, 15, 20}));
             r.give_sprite(obj, "../resources/Player.1.png");
             o.add_object(obj);
+            return;
+        }
+        case sf::Keyboard::P: {
+            logger_.write(Message::key_pressed("P"));
+            // This could probably be made to work with shared_ptr
+            // But this is much easier.
+            auto p = new Player(PhysicsRect({5, 10, 15, 20}));
+            r.give_sprite(*p, "../resources/Player.1.png");
+            o.add_special(p);
+            o.set_player(p);
+            return;
+        }
+        case sf::Keyboard::S: {
+            if (c.has(sf::Keyboard::A)) logger_.write(Message("Already set up the keybind."));
+            else c.set(sf::Keyboard::A, new Controls::Action(o.get_player(), "Do Something"));
             return;
         }
         case sf::Keyboard::Escape:

@@ -4,7 +4,8 @@
 #include "GameObject.h"
 
 class Player : public GameObject {
-
+public:
+    explicit Player(PhysicsRect rect = PhysicsRect()) : GameObject(rect) {}
 };
 
 

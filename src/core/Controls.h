@@ -3,6 +3,7 @@
 
 #include <objects/Player.h>
 #include <functional>
+#include "Logger.h"
 
 class Controls {
 public:
@@ -22,6 +23,8 @@ public:
 
         std::string get_name() { return name_; }
 
+        // Next step: Make operator() pure virtual, then implement actions based on this.
+
     private:
         void *subject_; // This is really not that nice, but it's a 30-day game, so.
         Type type_;
@@ -29,16 +32,27 @@ public:
     };
 
 public:
-    explicit Controls() = default;
+    explicit Controls(Logger<std::ostream>& l) : logger_(l) {}
 
-    void set(sf::Keyboard::Key key, Action& action) {
+    bool has(sf::Keyboard::Key key) {
+        return actions_.find(key) != actions_.end();
+    }
+
+    void set(sf::Keyboard::Key key, Action* action) {
         if (actions_.find(key) != actions_.end()) actions_.erase(key);
         actions_.insert({key, action});
     }
 
-private:
+    bool execute(sf::Keyboard::Key key) {
+        if (!has(key)) return false;
+        logger_.write(Message(actions_.at(key)->get_name()));
+        return true;
+    }
 
-    std::map<sf::Keyboard::Key, Action&> actions_;
+private:
+    Logger<std::ostream>& logger_;
+
+    std::map<sf::Keyboard::Key, Action*> actions_;
 };
 
 
