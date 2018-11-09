@@ -1,4 +1,5 @@
 #include <objects/Player.h>
+#include "actions/AcceleratePlayer.h"
 #include "App.h"
 
 void App::initialize() {
@@ -53,7 +54,7 @@ void App::process_event(const sf::Event &event) {
 void App::process_key_event(const sf::Keyboard::Key &key) {
     switch (key) {
         case sf::Keyboard::A:
-            c.execute(key);
+            if (!c.execute(key)) logger_.write(Message("Key A is unbound."));
             return;
         case sf::Keyboard::B:
             logger_.write(Message::key_pressed("B"));
@@ -83,7 +84,7 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
         }
         case sf::Keyboard::S: {
             if (c.has(sf::Keyboard::A)) logger_.write(Message("Already set up the keybind."));
-            else c.set(sf::Keyboard::A, new Controls::Action(o.get_player(), "Do Something"));
+            else c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player()));
             return;
         }
         case sf::Keyboard::Escape:

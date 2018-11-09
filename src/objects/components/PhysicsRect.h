@@ -17,6 +17,11 @@ class PhysicsRect {
 public:
     explicit PhysicsRect(Rect r = Rect{0, 0, 0, 0}) : rect_(r) {}
 
+    int x() { return rect_.x; }
+    int y() { return rect_.y; }
+    void x(int input) { rect_.x = input; }
+    void y(int input) { rect_.y = input; }
+
     Rect rect_;
 };
 
