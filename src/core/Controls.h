@@ -8,35 +8,51 @@
 
 class Controls {
 public:
+    enum class ActionType {
+        Error,
+        Player
+    };
+public:
     explicit Controls(Logger<std::ostream> &l) : logger_(l) {}
 
-    bool has(sf::Keyboard::Key key) {
-        return actions_.find(key) != actions_.end();
+    ActionType has(const sf::Keyboard::Key& key) {
+        if (player_actions_.find(key) != player_actions_.end()) return ActionType::Player;
+        return ActionType::Error;
     }
 
-    void set(sf::Keyboard::Key key, Action *action) {
-        if (actions_.find(key) != actions_.end()) actions_.erase(key);
-        actions_.insert({key, action});
+    void set(sf::Keyboard::Key key, Action<Player>* action) {
+        if (player_actions_.find(key) != player_actions_.end()) player_actions_.erase(key);
+        player_actions_.insert({key, action});
     }
 
     bool execute(sf::Keyboard::Key key) {
-        if (!has(key)) return false;
-        auto action = actions_.at(key);
-        logger_.write(Message("Executing: ", action->get_name()));
-        if (!action->can_execute()) {
-            logger_.write(Message("Action could not be executed."));
-            return false;
+        ActionType t = has(key);
+        switch (t) {
+            case ActionType ::Error: return false;
+            case ActionType :: Player:
+            {
+                Action<Player>& action = *(player_actions_.at(key));
+                logger_.write(Message("Executing: ", action.get_name()));
+                if (!action.can_execute()) {
+                    logger_.write(Message("Action could not be executed."));
+                    return false;
+                }
+                else {
+                    action();
+                    return true;
+                }
+            }
         }
-        else {
-            (*action)();
-            return true;
-        }
+    }
+
+    ~Controls() {
+        for (auto&& ptr : player_actions_) delete ptr.second;
     }
 
 private:
     Logger<std::ostream> &logger_;
 
-    std::map<sf::Keyboard::Key, Action *> actions_;
+    std::map<sf::Keyboard::Key, Action<Player>*> player_actions_;
 };
 
 

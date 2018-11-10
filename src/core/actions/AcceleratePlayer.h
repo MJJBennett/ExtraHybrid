@@ -3,11 +3,11 @@
 
 #include "Action.h"
 
-class AcceleratePlayer : public Action {
+class AcceleratePlayer : public Action<Player> {
 public:
     AcceleratePlayer() = delete;
 
-    explicit AcceleratePlayer(Player* player) : Action(player, "AcceleratePlayer") {}
+    explicit AcceleratePlayer(ObjectWrapper<Player>& player) : Action(player, "AcceleratePlayer") {}
 
     bool operator()() override;
 };

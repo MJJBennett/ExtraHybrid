@@ -83,7 +83,8 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
             return;
         }
         case sf::Keyboard::S: {
-            if (c.has(sf::Keyboard::A)) logger_.write(Message("Already set up the keybind."));
+            if (c.has(sf::Keyboard::A) != Controls::ActionType::Error)
+                logger_.write(Message("Already set up the keybind."));
             else c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player()));
             return;
         }
