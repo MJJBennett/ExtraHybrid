@@ -7,6 +7,7 @@
 #include "../resources/ResourceManager.h"
 #include "objects/ObjectManager.h"
 #include "Controls.h"
+#include "objects/ObjectWrapper.h"
 
 struct State {
     bool toggle(bool &var) {
@@ -19,8 +20,8 @@ struct State {
 
 class App {
 public:
-    explicit App(std::ostream &log_buffer) : logger_("logging/log.txt", log_buffer, 0), r(logger_), o(logger_),
-                                             c(logger_) {}
+    explicit App(std::ostream &log_buffer) : logger_("logging/log.txt", log_buffer, 0), r(logger_), o(logger_, r),
+                                             c(logger_, &r, &o), window_wrapper_(&w) {}
 
     ~App();
 
@@ -43,6 +44,7 @@ private:
     Logger<std::ostream> logger_;
     ObjectManager o;
     sf::RenderWindow w;
+    ObjectWrapper<sf::RenderWindow> window_wrapper_;
     ResourceManager r;
     Controls c;
 

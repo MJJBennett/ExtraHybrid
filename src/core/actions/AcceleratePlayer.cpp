@@ -1,6 +1,6 @@
 #include "AcceleratePlayer.h"
 
-bool AcceleratePlayer::operator()() {
+CallType AcceleratePlayer::operator()() {
     subject_->accelerate(5, 0);
-    return false;
+    return CallType::None;
 }

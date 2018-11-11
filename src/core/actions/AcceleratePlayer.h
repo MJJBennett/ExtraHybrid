@@ -9,7 +9,8 @@ public:
 
     explicit AcceleratePlayer(ObjectWrapper<Player>& player) : Action(player, "AcceleratePlayer") {}
 
-    bool operator()() override;
+    CallType operator()() override;
+    CallType operator()(ResourceManager*, ObjectManager*) override { return CallType::Error; }
 };
 
 #endif //NOVEMBERGAMEJAM_ACCELERATEPLAYER_H

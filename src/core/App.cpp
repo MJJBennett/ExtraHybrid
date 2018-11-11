@@ -1,5 +1,8 @@
 #include <objects/Player.h>
+#include <actions/CloseWindow.h>
+#include <actions/CreatePlayer.h>
 #include "actions/AcceleratePlayer.h"
+
 #include "App.h"
 
 void App::initialize() {
@@ -18,6 +21,12 @@ void App::initialize() {
         logger_.write(Message("Failed to load ", status.num_fails, " thing", status.num_fails > 1 ? "s " : " ",
                               "from core resources file."));
     }
+
+    c.set(sf::Keyboard::Escape, new CloseWindow(window_wrapper_));
+    c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player()));
+    c.set(sf::Keyboard::P, new CreatePlayer(o.get_player()));
+    // Note: Other default keybinds as follows.
+    //  - sf::Keyboard::J - Configuration (change keybinds)
 }
 
 void App::run() {
@@ -29,10 +38,7 @@ void App::loop() {
     while (w.pollEvent(event)) process_event(event);
     o.tick();
     w.clear(sf::Color::Black);
-    if (state_.t_draw_resource_manager)
-        for (auto &&sprite: r.sprites) w.draw(sprite);
-    else
-        w.draw(o);
+    w.draw(o);
     w.display();
 }
 
@@ -53,48 +59,7 @@ void App::process_event(const sf::Event &event) {
 }
 
 void App::process_key_event(const sf::Keyboard::Key &key) {
-    switch (key) {
-        case sf::Keyboard::B:
-            logger_.write(Message::key_pressed("B"));
-            r.sprites.push_back(r.get_sprite("../resources/Player.1.png"));
-            r.sprites.back().setPosition(5 * r.sprites.size(), 60 + 32 * r.sprites.size());
-            return;
-        case sf::Keyboard::C:
-            logger_.write(Message::key_pressed("C"));
-            state_.toggle(state_.t_draw_resource_manager);
-            return;
-        case sf::Keyboard::D: {
-            logger_.write(Message::key_pressed("D"));
-            GameObject obj(PhysicsRect({5, 10, 15, 20}));
-            r.give_sprite(obj, "../resources/Player.1.png");
-            o.add_object(obj);
-            return;
-        }
-        case sf::Keyboard::P: {
-            logger_.write(Message::key_pressed("P"));
-            // This could probably be made to work with shared_ptr
-            // But this is much easier.
-            auto p = new Player(PhysicsRect({5, 10, 15, 20}));
-            r.give_sprite(*p, "../resources/Player.1.png");
-            o.add_special(p);
-            o.set_player(p);
-            return;
-        }
-        case sf::Keyboard::S: {
-            if (c.has(sf::Keyboard::A) != Controls::ActionType::Error)
-                logger_.write(Message("Already set up the keybind."));
-            else c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player()));
-            return;
-        }
-        case sf::Keyboard::Escape:
-            // This is beautiful and I won't let you tell me it isn't.
-            logger_.write(Message(Message::close(Message::key_pressed("Escape").string())));
-            w.close();
-            return;
-        default:
-            if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
-            return;
-    }
+    if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
 }
 
 

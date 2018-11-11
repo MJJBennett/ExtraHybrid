@@ -9,10 +9,12 @@
 #include "objects/ObjectWrapper.h"
 #include "PhysicsManager.h"
 
+class ResourceManager;
+
 class ObjectManager : public sf::Drawable {
     friend class PhysicsManager;
 public:
-    explicit ObjectManager(Logger<std::ostream> &logger) : logger_(logger) {}
+    explicit ObjectManager(Logger<std::ostream> &logger, ResourceManager& rm) : logger_(logger), r(rm) {}
 
     void tick();
 
@@ -45,6 +47,8 @@ private:
     std::vector<GameObject> game_objects_;
     std::vector<GameObject *> special_objects_;
     Logger<std::ostream> &logger_;
+
+    ResourceManager& r;
 
     ObjectWrapper<Player> player_;
 };

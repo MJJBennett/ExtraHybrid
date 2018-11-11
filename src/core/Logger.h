@@ -36,6 +36,7 @@ public:
     }
 
     const std::string &string() { return message_; }
+    void prepend(std::string str) { message_ = str + message_; }
 
 private:
     template<typename T>
@@ -63,14 +64,24 @@ public:
 
     bool write_header() {
         auto time = std::time(nullptr);
-        return write(Message("--------------------------\n",
+        return write(Message("---------------------------------------\n",
                              "Logging started at: ",
                              std::put_time(std::localtime(&time),
                                            "%d-%m-%Y %H:%M:%S")));
     }
 
+    void prepend(std::string str) { prepend_ += str; }
+
+    void clear_prepend() { prepend_ = ""; }
+
     // Ideally, in the future all these methods (in all classes) would return an std::optional<Message>
     bool write(Message message) {
+        // Check if we want to prepend this message with something.
+        if (prepend_ != "") {
+            message.prepend(prepend_);
+            clear_prepend();
+        }
+
         // If we stream every message, just write it out.
         if (stream_freq_ == 0) stream(message.string(), true);
 
@@ -139,6 +150,7 @@ private:
     bool no_log_;
     T &stream_;
     std::vector<Message> buffer_;
+    std::string prepend_ = "";
 };
 
 

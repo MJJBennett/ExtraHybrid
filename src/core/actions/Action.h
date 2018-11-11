@@ -4,22 +4,34 @@
 #include "objects/Player.h"
 #include "objects/ObjectWrapper.h"
 
+enum class CallType {
+    None,
+    Basic,
+    Full,
+    Error
+};
+
+class ResourceManager;
+
+class ObjectManager;
+
 template<typename Subject_T>
 class Action {
 public:
-    explicit Action(ObjectWrapper<Subject_T>& subject, std::string name) : name_(std::move(name)),
-                                                        subject_(subject) {}
+    explicit Action(ObjectWrapper<Subject_T> &subject, std::string name) : name_(std::move(name)),
+                                                                           subject_(subject) {}
 
     std::string get_name() { return name_; }
 
-    virtual ~Action()=default;
+    virtual ~Action() = default;
 
-    bool can_execute() { return subject_.get() != nullptr; }
+    virtual bool can_execute() { return subject_.get() != nullptr; }
 
-    virtual bool operator()() =0;
+    virtual CallType operator()() = 0;
+    virtual CallType operator()(ResourceManager*, ObjectManager*) = 0;
 
 protected:
-    ObjectWrapper<Subject_T>& subject_; // This is really not that nice, but it's a 30-day game, so.
+    ObjectWrapper<Subject_T> &subject_; // This is really not that nice, but it's a 30-day game, so.
     std::string name_;
 };
 
