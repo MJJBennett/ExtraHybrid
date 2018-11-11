@@ -27,6 +27,7 @@ void App::run() {
 void App::loop() {
     sf::Event event{};
     while (w.pollEvent(event)) process_event(event);
+    o.tick();
     w.clear(sf::Color::Black);
     if (state_.t_draw_resource_manager)
         for (auto &&sprite: r.sprites) w.draw(sprite);
@@ -53,9 +54,6 @@ void App::process_event(const sf::Event &event) {
 
 void App::process_key_event(const sf::Keyboard::Key &key) {
     switch (key) {
-        case sf::Keyboard::A:
-            if (!c.execute(key)) logger_.write(Message("Key A is unbound."));
-            return;
         case sf::Keyboard::B:
             logger_.write(Message::key_pressed("B"));
             r.sprites.push_back(r.get_sprite("../resources/Player.1.png"));
@@ -94,6 +92,7 @@ void App::process_key_event(const sf::Keyboard::Key &key) {
             w.close();
             return;
         default:
+            if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
             return;
     }
 }

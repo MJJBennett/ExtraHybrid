@@ -7,8 +7,10 @@
 #include "objects/Player.h"
 #include <vector>
 #include "objects/ObjectWrapper.h"
+#include "PhysicsManager.h"
 
 class ObjectManager : public sf::Drawable {
+    friend class PhysicsManager;
 public:
     explicit ObjectManager(Logger<std::ostream> &logger) : logger_(logger) {}
 

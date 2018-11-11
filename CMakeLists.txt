@@ -39,7 +39,7 @@ add_executable(NovemberGameJam
         src/objects/Player.cpp src/objects/Player.h
         src/core/Controls.cpp src/core/Controls.h
         src/core/actions/Action.h
-        src/core/actions/AcceleratePlayer.cpp src/core/actions/AcceleratePlayer.h src/objects/ObjectWrapper.h)
+        src/core/actions/AcceleratePlayer.cpp src/core/actions/AcceleratePlayer.h src/objects/ObjectWrapper.h src/core/PhysicsManager.cpp src/core/PhysicsManager.h src/core/tools/Timer.h src/core/tools/Keyboard.h)
 
 # Link the project (system dependant)
 if (WIN32)
