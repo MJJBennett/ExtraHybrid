@@ -6,10 +6,10 @@ bool Controls::execute(sf::Keyboard::Key key) {
         auto t = has(key);
         if (t == ActionType::Error) {
             config_mode_ = 0;
+            logger_.write(Message("[Key pressed: ", keyToString(key), "] No action bound to this key."));
             return false; // Can't change the value of this key
         }
-        logger_.write(Message(Message::key_pressed(keyToString(key)).string(), ". Changing this key, for: ",
-                              nameAt(key)));
+        logger_.write(Message("[Key pressed: ", keyToString(key), "] Changing this key, for: ", nameAt(key)));
         config_mode_ = 2;
         config_key_ = key;
         return true;
@@ -18,16 +18,18 @@ bool Controls::execute(sf::Keyboard::Key key) {
         auto t = has(config_key_);
         if (t == ActionType::Error) {
             config_mode_ = 0;
+            logger_.write(Message("[Key being updated: ", keyToString(config_key_),
+                                  "] No action bound to this key anymore."));
             return false; // We lost that key
         }
         if (has(key) != ActionType::Error) {
-            logger_.write(Message(Message::key_pressed(keyToString(key)).string(), ". This key is already bound to: ",
-                                  nameAt(key), ". Rebind that action first!"));
+            logger_.write(Message("[Key pressed: ", keyToString(key), "] This key is already bound to: ", nameAt(key),
+                                  ". This action must be rebound first."));
             config_mode_ = 0;
             return false;
         }
         if (key == config_key_) return true; // Did nothing (intentionally)
-        logger_.write(Message(Message::key_pressed(keyToString(key)).string(), ". This is the new keybind for: ",
+        logger_.write(Message("[Key pressed: ", keyToString(key), "] This is the new keybind for: ",
                               nameAt(config_key_)));
         config_mode_ = 0;
         switch (t) {
@@ -46,12 +48,13 @@ bool Controls::execute(sf::Keyboard::Key key) {
                 return true;
             }
             default:
+                logger_.write(Message("[Key pressed: ", keyToString(key), "] ...something went wrong."));
                 return false; // Not sure what happened here
         }
     }
     if (key == config_) {
         // This will allow rebinding of keys.
-        logger_.write(Message(Message::key_pressed(keyToString(key)).string(), ": Entering configuration mode.\n",
+        logger_.write(Message("[Key pressed: ", keyToString(key), "] Entering configuration mode.\n",
                               "Enter the key you would like to change."));
         config_mode_ = 1;
         return true;

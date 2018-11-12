@@ -59,7 +59,8 @@ void App::process_event(const sf::Event &event) {
 }
 
 void App::process_key_event(const sf::Keyboard::Key &key) {
-    if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
+    c.execute(key);
+    //if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
 }
 
 
