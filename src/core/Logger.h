@@ -60,7 +60,7 @@ public:
     Logger(std::string logfile, T &stream, int stream_freq = 0) : logfile_(std::move(logfile)),
                                                                   stream_freq_(stream_freq),
                                                                   stream_(stream),
-                                                                  no_log_(logfile.empty()) {}
+                                                                  no_log_(logfile_.empty()) {}
 
     bool write_header() {
         auto time = std::time(nullptr);
@@ -143,11 +143,11 @@ public:
     ~Logger() { flush(); }
 
 private:
-    std::string logfile_;
+    std::string logfile_; // Do not change the order of this & no_log_
+    bool no_log_;
     int stream_freq_;
     size_t stream_counter_ = 0;
     size_t streamed_since_reset_ = 0;
-    bool no_log_;
     T &stream_;
     std::vector<Message> buffer_;
     std::string prepend_ = "";
