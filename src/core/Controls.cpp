@@ -42,6 +42,11 @@ bool Controls::execute(sf::Keyboard::Key key) {
                 change_key(window_actions_, config_key_, key);
                 return true;
             }
+            case ActionType::Special: {
+                // Changes the key that changes keys.
+                if (config_key_ == config_) config_ = key;
+                return true;
+            }
             default:
                 logger_.write(Message("[Key pressed: ", keyToString(key), "] ...something went wrong."));
                 return false; // Not sure what happened here

@@ -11,7 +11,8 @@ public:
     enum class ActionType {
         Error,
         Player,
-        Window
+        Window,
+        Special
     };
 public:
     explicit Controls(Logger<std::ostream> &l, ResourceManager* r, ObjectManager* o) : logger_(l), r(r), o(o) {}
@@ -19,6 +20,7 @@ public:
     ActionType has(const sf::Keyboard::Key &key) {
         if (player_actions_.find(key) != player_actions_.end()) return ActionType::Player;
         if (window_actions_.find(key) != window_actions_.end()) return ActionType::Window;
+        if (config_ == key) return ActionType::Special;
         return ActionType::Error;
     }
 
@@ -37,6 +39,7 @@ public:
     std::string nameAt(sf::Keyboard::Key key) {
         if (window_actions_.find(key) != window_actions_.end()) return window_actions_.at(key)->get_name();
         if (player_actions_.find(key) != player_actions_.end()) return player_actions_.at(key)->get_name();
+        if (key == config_) return "KeybindConfiguration";
         return "Key has no action.";
     }
 
