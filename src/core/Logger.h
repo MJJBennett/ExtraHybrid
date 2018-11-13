@@ -75,7 +75,7 @@ public:
     void clear_prepend() { prepend_ = ""; }
 
     // Ideally, in the future all these methods (in all classes) would return an std::optional<Message>
-    bool write(Message message) {
+    bool write(Message message, bool force_flush = false) {
         // Check if we want to prepend this message with something.
         if (prepend_ != "") {
             message.prepend(prepend_);
@@ -89,24 +89,32 @@ public:
         if (stream_freq_ > 0 || !no_log_) buffer_.push_back(std::move(message));
 
         // If we stream every stream_freq_ messages, check if we've hit that number, then stream the buffer subsection.
-        if (stream_freq_ > 0 && streamed_since_reset_ > 0 && streamed_since_reset_ % stream_freq_ == 0) {
-            while (stream_counter_ < buffer_.size()) {
-                stream(buffer_.at(stream_counter_++).string());
-            }
-            flush_stream();
-            streamed_since_reset_ = 0;
-
-            // If we don't log, just empty the buffer now.
-            if (no_log_) {
-                // Make sure to make the counter 0 again.
-                stream_counter_ = 0;
-                buffer_.clear();
-            }
+        if (should_stream_buffer() || force_flush) {
+            stream_and_flush_buffer();
         } else {
-            streamed_since_reset_++;
+            buffered_messages_++;
         }
 
         return false;
+    }
+
+    bool should_stream_buffer() {
+        return stream_freq_ > 0 && buffered_messages_ > 0 && buffered_messages_ % stream_freq_ == 0;
+    }
+
+    void stream_and_flush_buffer() {
+        while (stream_counter_ < buffer_.size()) {
+            stream(buffer_.at(stream_counter_++).string());
+        }
+        flush_stream();
+        buffered_messages_ = 0;
+
+        // If we don't log, just empty the buffer now.
+        if (no_log_) {
+            // Make sure to make the counter 0 again.
+            stream_counter_ = 0;
+            buffer_.clear();
+        }
     }
 
     void stream(std::string str, bool flush = false) {
@@ -147,7 +155,7 @@ private:
     bool no_log_;
     int stream_freq_;
     size_t stream_counter_ = 0;
-    size_t streamed_since_reset_ = 0;
+    size_t buffered_messages_ = 0;
     T &stream_;
     std::vector<Message> buffer_;
     std::string prepend_ = "";

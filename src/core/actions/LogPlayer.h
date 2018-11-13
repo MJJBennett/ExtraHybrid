@@ -3,10 +3,10 @@
 
 #include "Action.h"
 
-class LogPlayer : public Action<Player> {
+class LogPlayer : public SubjectAction<Player> {
 public:
     LogPlayer() = delete;
-    explicit LogPlayer(ObjectWrapper<Player>& player) : Action(player, "LogPlayer") {}
+    explicit LogPlayer(ObjectWrapper<Player>& player) : SubjectAction(player, "LogPlayer") {}
 
     // We can always execute this.
     //...for now.

@@ -9,27 +9,28 @@ enum class CallType {
     Basic,
     Full,
     Error,
-    Logger
+    Logger,
+    Controls
 };
 
 class ResourceManager;
 
 class ObjectManager;
 
+class Controls;
+
 template<typename T>
 class Logger;
 
-template<typename Subject_T>
 class Action {
 public:
-    explicit Action(ObjectWrapper<Subject_T> &subject, std::string name) : name_(std::move(name)),
-                                                                           subject_(subject) {}
+    explicit Action(std::string name) : name_(std::move(name)) {}
 
-    std::string get_name() { return name_; }
+    std::string get_name() const { return name_; }
 
     virtual ~Action() = default;
 
-    virtual bool can_execute() { return subject_.get() != nullptr; }
+    virtual bool can_execute() { return true; }
 
     virtual CallType operator()() = 0;
 
@@ -37,9 +38,22 @@ public:
 
     virtual CallType operator()(Logger<std::ostream> *) { return CallType::Error; }
 
+    virtual CallType operator()(Controls *) { return CallType::Error; }
+
+protected:
+    std::string name_;
+};
+
+template<typename Subject_T>
+class SubjectAction : public Action {
+public:
+    explicit SubjectAction(ObjectWrapper<Subject_T> &subject, std::string name) : Action(std::move(name)),
+                                                                                  subject_(subject) {}
+
+    bool can_execute() override { return subject_.get() != nullptr; }
+
 protected:
     ObjectWrapper<Subject_T> &subject_; // This is really not that nice, but it's a 30-day game, so.
-    std::string name_;
 };
 
 

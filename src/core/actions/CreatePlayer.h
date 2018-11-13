@@ -3,10 +3,10 @@
 
 #include "Action.h"
 
-class CreatePlayer : public Action<Player> {
+class CreatePlayer : public SubjectAction<Player> {
 public:
     CreatePlayer() = delete;
-    explicit CreatePlayer(ObjectWrapper<Player>& player) : Action(player, "CreatePlayer") {}
+    explicit CreatePlayer(ObjectWrapper<Player>& player) : SubjectAction(player, "CreatePlayer") {}
 
     // We can always execute this.
     //...for now.

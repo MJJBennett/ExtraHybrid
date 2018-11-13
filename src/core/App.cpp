@@ -2,6 +2,7 @@
 #include <actions/CloseWindow.h>
 #include <actions/CreatePlayer.h>
 #include <actions/LogPlayer.h>
+#include <actions/PrintHelp.h>
 #include "actions/AcceleratePlayer.h"
 
 #include "App.h"
@@ -27,6 +28,7 @@ void App::initialize() {
     c.set(sf::Keyboard::Escape, new CloseWindow(window_wrapper_));
     c.set_config_key(sf::Keyboard::Num0);
     c.set(sf::Keyboard::L, new LogPlayer(o.get_player()));
+    c.set(sf::Keyboard::H, new PrintHelp());
 
     // Game modification options
     c.set(sf::Keyboard::P, new CreatePlayer(o.get_player()));

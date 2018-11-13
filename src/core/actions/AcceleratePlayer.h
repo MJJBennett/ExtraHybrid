@@ -4,11 +4,12 @@
 #include "Action.h"
 #include "tools/PhysUtil.h"
 
-class AcceleratePlayer : public Action<Player> {
+class AcceleratePlayer : public SubjectAction<Player> {
 public:
     AcceleratePlayer() = delete;
 
-    explicit AcceleratePlayer(ObjectWrapper<Player> &player, phys::vec2 vec) : Action(player, "AcceleratePlayer"),
+    explicit AcceleratePlayer(ObjectWrapper<Player> &player, phys::vec2 vec) : SubjectAction(player,
+                                                                                             "AcceleratePlayer"),
                                                                                vec_(vec) {}
 
     CallType operator()() override;

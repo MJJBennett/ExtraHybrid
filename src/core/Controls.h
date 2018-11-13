@@ -9,55 +9,58 @@
 class Controls {
 public:
     enum class ActionType {
-        Error,
-        Player,
-        Window,
-        Special
+        Error, // The action doesn't exist or some other error
+        Normal, // The action is contained in player_actions_
+        Special, // The action is not in storage at all
     };
 public:
-    explicit Controls(Logger<std::ostream> &l, ResourceManager* r, ObjectManager* o) : logger_(l), r(r), o(o) {}
+    explicit Controls(Logger<std::ostream> &l, ResourceManager *r, ObjectManager *o) : logger_(l), r(r), o(o) {}
 
     ActionType has(const sf::Keyboard::Key &key) {
-        if (player_actions_.find(key) != player_actions_.end()) return ActionType::Player;
-        if (window_actions_.find(key) != window_actions_.end()) return ActionType::Window;
+        if (actions_.find(key) != actions_.end()) return ActionType::Normal;
         if (config_ == key) return ActionType::Special;
         return ActionType::Error;
     }
 
-    void set(sf::Keyboard::Key key, Action<Player> *action) {
-        if (player_actions_.find(key) != player_actions_.end()) player_actions_.erase(key);
-        player_actions_.insert({key, action});
+    // Executes a function for each action
+    // Doesn't seem to work for some reason so I'm leaving it for now
+    template<class UnaryFunction>
+    static void for_each(Controls* c, UnaryFunction f) {
+        for (auto &&ptr : c->actions_) f(ptr.first);
     }
 
-    void set(sf::Keyboard::Key key, Action<sf::RenderWindow> *action) {
-        if (window_actions_.find(key) != window_actions_.end()) player_actions_.erase(key);
-        window_actions_.insert({key, action});
+
+    void set(sf::Keyboard::Key key, Action *action) {
+        maybe_erase(actions_, key);
+        actions_.insert({key, action});
     }
 
     void set_config_key(sf::Keyboard::Key key) { config_ = key; }
 
     std::string nameAt(sf::Keyboard::Key key) {
-        if (window_actions_.find(key) != window_actions_.end()) return window_actions_.at(key)->get_name();
-        if (player_actions_.find(key) != player_actions_.end()) return player_actions_.at(key)->get_name();
+        if (actions_.find(key) != actions_.end()) return actions_.at(key)->get_name();
         if (key == config_) return "KeybindConfiguration";
         return "Key has no action.";
     }
 
     bool execute(sf::Keyboard::Key key);
 
-    template<typename T>
-    CallType execute_action(Action<T>& action, CallType call_type = CallType::Basic);
+    CallType execute_action(Action &action, CallType call_type = CallType::Basic);
 
     ~Controls() {
-        for (auto &&ptr : player_actions_) delete ptr.second;
-        for (auto &&ptr : window_actions_) delete ptr.second;
+        // TODO - Please make these unique_ptrs so that this isn't quite as awful.
+        for (auto &&ptr : actions_) delete ptr.second;
     }
 
 private:
+    void maybe_erase(std::map<sf::Keyboard::Key, Action *> &map, sf::Keyboard::Key key) const;
+
+private:
+
     Logger<std::ostream> &logger_;
 
-    ResourceManager* r;
-    ObjectManager* o;
+    ResourceManager *r;
+    ObjectManager *o;
 
     // Special states
     unsigned int config_mode_ = 0;
@@ -66,9 +69,7 @@ private:
     // Special keys
     sf::Keyboard::Key config_ = sf::Keyboard::Key::J;
 
-    std::map<sf::Keyboard::Key, Action<Player> *> player_actions_;
-    std::map<sf::Keyboard::Key, Action<sf::RenderWindow> *> window_actions_;
+    std::map<sf::Keyboard::Key, Action *> actions_;
 };
-
 
 #endif //NOVEMBERGAMEJAM_CONTROLS_H
