@@ -6,6 +6,8 @@
 class Player : public GameObject {
 public:
     explicit Player(PhysicsRect rect = PhysicsRect()) : GameObject(rect) {}
+private:
+    friend class LogPlayer;
 };
 
 

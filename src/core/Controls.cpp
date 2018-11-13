@@ -1,5 +1,6 @@
 #include "Controls.h"
 #include "tools/Keyboard.h"
+#include "tools/MapUtils.h"
 
 bool Controls::execute(sf::Keyboard::Key key) {
     if (config_mode_ == 1) {
@@ -33,18 +34,12 @@ bool Controls::execute(sf::Keyboard::Key key) {
                               nameAt(config_key_)));
         config_mode_ = 0;
         switch (t) {
-            // This logic can be mostly refactored into a helper function that takes a map & a key.
             case ActionType::Player: {
-                // https://en.cppreference.com/w/cpp/container/map/extract
-                auto action = player_actions_.extract(config_key_); // Get the value for the original key
-                action.key() = key; // Set the new key
-                player_actions_.insert(std::move(action));
+                change_key(player_actions_, config_key_, key);
                 return true;
             }
             case ActionType::Window: {
-                auto action = window_actions_.extract(config_key_); // Get the value for the original key
-                action.key() = key; // Set the new key
-                window_actions_.insert(std::move(action));
+                change_key(window_actions_, config_key_, key);
                 return true;
             }
             default:
@@ -93,6 +88,8 @@ CallType Controls::execute_action(Action<T> &action, CallType call_type) {
             return execute_action(action, action());
         case CallType::Full:
             return execute_action(action, action(r, o));
+        case CallType::Logger:
+            return execute_action(action, action(&logger_));
         default:
             return CallType::Error;
     }

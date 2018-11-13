@@ -8,12 +8,16 @@ enum class CallType {
     None,
     Basic,
     Full,
-    Error
+    Error,
+    Logger
 };
 
 class ResourceManager;
 
 class ObjectManager;
+
+template<typename T>
+class Logger;
 
 template<typename Subject_T>
 class Action {
@@ -28,7 +32,10 @@ public:
     virtual bool can_execute() { return subject_.get() != nullptr; }
 
     virtual CallType operator()() = 0;
-    virtual CallType operator()(ResourceManager*, ObjectManager*) = 0;
+
+    virtual CallType operator()(ResourceManager *, ObjectManager *) { return CallType::Error; }
+
+    virtual CallType operator()(Logger<std::ostream> *) { return CallType::Error; }
 
 protected:
     ObjectWrapper<Subject_T> &subject_; // This is really not that nice, but it's a 30-day game, so.

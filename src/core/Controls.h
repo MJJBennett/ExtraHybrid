@@ -32,6 +32,8 @@ public:
         window_actions_.insert({key, action});
     }
 
+    void set_config_key(sf::Keyboard::Key key) { config_ = key; }
+
     std::string nameAt(sf::Keyboard::Key key) {
         if (window_actions_.find(key) != window_actions_.end()) return window_actions_.at(key)->get_name();
         if (player_actions_.find(key) != player_actions_.end()) return player_actions_.at(key)->get_name();

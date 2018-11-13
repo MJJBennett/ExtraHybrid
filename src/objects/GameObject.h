@@ -22,7 +22,8 @@ protected:
     void update_sprite() {
         sprite_.setPosition(rect_.x_int(), rect_.y_int());
     }
-private:
+
+protected:
     PhysicsRect rect_;
     sf::Sprite sprite_;
     Timer timer_;

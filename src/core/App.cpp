@@ -1,6 +1,7 @@
 #include <objects/Player.h>
 #include <actions/CloseWindow.h>
 #include <actions/CreatePlayer.h>
+#include <actions/LogPlayer.h>
 #include "actions/AcceleratePlayer.h"
 
 #include "App.h"
@@ -22,11 +23,20 @@ void App::initialize() {
                               "from core resources file."));
     }
 
+    // Meta options
     c.set(sf::Keyboard::Escape, new CloseWindow(window_wrapper_));
-    c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player()));
+    c.set_config_key(sf::Keyboard::Num0);
+    c.set(sf::Keyboard::L, new LogPlayer(o.get_player()));
+
+    // Game modification options
     c.set(sf::Keyboard::P, new CreatePlayer(o.get_player()));
-    // Note: Other default keybinds as follows.
-    //  - sf::Keyboard::J - Configuration (change keybinds)
+
+    // Actual game functionality
+    const float base_acceleration = 20;
+    c.set(sf::Keyboard::D, new AcceleratePlayer(o.get_player(), phys::vec2{base_acceleration,0}));
+    c.set(sf::Keyboard::W, new AcceleratePlayer(o.get_player(), phys::vec2{0,-base_acceleration}));
+    c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player(), phys::vec2{-base_acceleration,0}));
+    c.set(sf::Keyboard::S, new AcceleratePlayer(o.get_player(), phys::vec2{0,base_acceleration}));
 }
 
 void App::run() {
