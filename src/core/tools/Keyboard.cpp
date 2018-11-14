@@ -1,16 +1,9 @@
-#ifndef NOVEMBERGAMEJAM_KEYBOARD_H
-#define NOVEMBERGAMEJAM_KEYBOARD_H
-
-#include <string>
-#include <SFML/Window/Keyboard.hpp>
-
-// I created this because I was about to go to bed and I couldn't figure out a solution to the linker errors.
-// Might be unavoidable, but fixing this requires looking into compilation units + lambdas.
+#include "Keyboard.h"
 
 // I did not write this.
 // Thank you, BlackHC: https://en.sfml-dev.org/forums/index.php?topic=8458.0
 // You are truly a wrist-saver.
-std::string keyToString2(const sf::Keyboard::Key &key) {
+std::string keyToString(const sf::Keyboard::Key &key) {
     switch (key) {
         case sf::Keyboard::A:
             return "A";
@@ -218,5 +211,3 @@ std::string keyToString2(const sf::Keyboard::Key &key) {
             return "Unknown";
     }
 }
-
-#endif //NOVEMBERGAMEJAM_KEYBOARD_H

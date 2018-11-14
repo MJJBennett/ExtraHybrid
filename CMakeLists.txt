@@ -39,7 +39,7 @@ add_executable(NovemberGameJam
         src/objects/Player.cpp src/objects/Player.h
         src/core/Controls.cpp src/core/Controls.h
         src/core/actions/Action.h
-        src/core/actions/AcceleratePlayer.cpp src/core/actions/AcceleratePlayer.h src/objects/ObjectWrapper.h src/core/PhysicsManager.cpp src/core/PhysicsManager.h src/core/tools/Timer.h src/core/tools/Keyboard.h src/core/actions/CreatePlayer.cpp src/core/actions/CreatePlayer.h src/core/actions/CloseWindow.cpp src/core/actions/CloseWindow.h src/core/tools/MapUtils.h src/core/tools/PhysUtil.h src/core/actions/LogPlayer.cpp src/core/actions/LogPlayer.h src/core/actions/PrintHelp.h src/core/actions/PrintHelp.cpp)
+        src/core/actions/AcceleratePlayer.cpp src/core/actions/AcceleratePlayer.h src/objects/ObjectWrapper.h src/core/PhysicsManager.cpp src/core/PhysicsManager.h src/core/tools/Timer.h src/core/tools/Keyboard.h src/core/actions/CreatePlayer.cpp src/core/actions/CreatePlayer.h src/core/actions/CloseWindow.cpp src/core/actions/CloseWindow.h src/core/tools/MapUtils.h src/core/tools/PhysUtil.h src/core/actions/LogPlayer.cpp src/core/actions/LogPlayer.h src/core/actions/PrintHelp.h src/core/actions/PrintHelp.cpp src/core/tools/Keyboard.cpp)
 
 # Link the project (system dependant)
 if (WIN32)
