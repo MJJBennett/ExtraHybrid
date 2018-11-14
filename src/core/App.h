@@ -21,7 +21,7 @@ struct State {
 class App {
 public:
     explicit App(std::ostream &log_buffer) : logger_("logging/log.txt", log_buffer, 0), r(logger_), o(logger_, r),
-                                             c(logger_, &r, &o), window_wrapper_(&w) {}
+                                             c(logger_, &r, &o), window_wrapper_(&w), controls_wrapper_(&c) {}
 
     ~App();
 
@@ -47,6 +47,7 @@ private:
     ObjectWrapper<sf::RenderWindow> window_wrapper_;
     ResourceManager r;
     Controls c;
+    ObjectWrapper<Controls> controls_wrapper_;
 
     State state_;
 };

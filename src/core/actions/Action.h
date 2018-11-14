@@ -56,5 +56,9 @@ protected:
     ObjectWrapper<Subject_T> &subject_; // This is really not that nice, but it's a 30-day game, so.
 };
 
+class KeyConsumer {
+public:
+    virtual bool consume_key(sf::Keyboard::Key)=0;
+};
 
 #endif //NOVEMBERGAMEJAM_ACTION_H

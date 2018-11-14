@@ -13,8 +13,6 @@ public:
     bool can_execute() override { return true; }
 
     CallType operator()() override { return CallType::Logger; }
-    // This should never be called
-    CallType operator()(ResourceManager* r, ObjectManager* o) override { return CallType::Error; }
     CallType operator()(Logger<std::ostream>* l) override;
 private:
 

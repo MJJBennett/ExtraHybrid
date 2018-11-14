@@ -11,7 +11,6 @@ public:
     explicit CloseWindow(ObjectWrapper<sf::RenderWindow>& window) : SubjectAction(window, "CloseWindow") {}
 
     CallType operator()() override;
-    CallType operator()(ResourceManager*, ObjectManager*) override { return CallType::Error; }
 private:
 
 };

@@ -3,6 +3,7 @@
 #include <actions/CreatePlayer.h>
 #include <actions/LogPlayer.h>
 #include <actions/PrintHelp.h>
+#include <actions/RebindKey.h>
 #include "actions/AcceleratePlayer.h"
 
 #include "App.h"
@@ -26,7 +27,7 @@ void App::initialize() {
 
     // Meta options
     c.set(sf::Keyboard::Escape, new CloseWindow(window_wrapper_));
-    c.set_config_key(sf::Keyboard::Num0);
+    c.set(sf::Keyboard::Num0, new RebindKey(controls_wrapper_, &logger_));
     c.set(sf::Keyboard::L, new LogPlayer(o.get_player()));
     c.set(sf::Keyboard::H, new PrintHelp());
 
