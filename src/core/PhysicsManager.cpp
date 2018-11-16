@@ -7,7 +7,10 @@ void PhysicsManager::update_object(GameObject& obj) {
         int x_max = 500;
         int y_min = 0;
         int y_max = 500;
+        int y_max_vel = 100;
+        int x_max_vel = 80;
     } bounds;
+    const float y_acceleration = 25;
 
     auto time = obj.timer_.get().asSeconds(); // Get the amount of time since the last update
     obj.timer_.restart(); // Restart the timer
@@ -43,4 +46,18 @@ void PhysicsManager::update_object(GameObject& obj) {
         obj.rect_.y(new_y);
         obj.update_sprite();
     }
+
+    // Now we update the velocity based on gravity
+
+    // First update the x velocity
+    if (std::abs(obj.rect_.x_velocity()) > bounds.x_max_vel) {
+        obj.rect_.x_velocity(obj.rect_.x_velocity()>0? bounds.x_max_vel : bounds.x_max_vel * -1);
+    }
+
+    // Now the y velocity
+    auto new_y_vel = obj.rect_.y_velocity() + y_acceleration * time;
+    if (std::abs(new_y_vel) > bounds.y_max_vel) {
+        obj.rect_.y_velocity(new_y_vel > 0? bounds.y_max_vel : bounds.y_max_vel*-1);
+    }
+    else obj.rect_.y_velocity(new_y_vel);
 }
