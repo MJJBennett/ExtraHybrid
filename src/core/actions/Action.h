@@ -32,11 +32,14 @@ public:
 
     virtual bool can_execute() { return true; }
 
-    // Key for this action was released.
-    virtual CallType release() { return CallType::None; }
+    // TODO - Implement helper methods/patterns in Action for automatically releasing/pressing keys
+    // To help with holding down keys.
 
-    // Key for this action was pressed.
+    // If the key is pressed, we default to just calling the action. If released, do nothing.
+    // However, subclasses can override this behaviour.
     virtual CallType operator()() = 0;
+
+    virtual CallType operator()(bool released) { return handle_down(released) ? (*this)() : CallType::None; }
 
     virtual CallType operator()(ResourceManager *, ObjectManager *) { return CallType::Error; }
 
@@ -46,6 +49,16 @@ public:
 
 protected:
     std::string name_;
+    bool is_down = false;
+
+    bool handle_down(bool released) {
+        if (!released && !is_down) {
+            is_down = true;
+            return true;
+        }
+        if (released && is_down) is_down = false;
+        return false;
+    }
 };
 
 template<typename Subject_T>
@@ -62,7 +75,7 @@ protected:
 
 class KeyConsumer {
 public:
-    virtual bool consume_key(sf::Keyboard::Key)=0;
+    virtual bool consume_key(sf::Keyboard::Key) = 0;
 };
 
 #endif //NOVEMBERGAMEJAM_ACTION_H

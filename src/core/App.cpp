@@ -64,21 +64,13 @@ void App::process_event(const sf::Event &event) {
             w.close();
             return;
         case sf::Event::KeyPressed:
-            c.execute(event.key.code);
-            return;
         case sf::Event::KeyReleased:
-            c.release(event.key.code);
+            c.execute(event);
             return;
         default:
             return;
     }
 }
-
-void App::process_key_event(const sf::Keyboard::Key &key) {
-    c.execute(key);
-    //if (!c.execute(key)) logger_.write(Message("Keypress unsuccessful."));
-}
-
 
 App::~App() {
     if (w.isOpen()) w.close();

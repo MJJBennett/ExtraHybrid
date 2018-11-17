@@ -12,11 +12,10 @@ public:
                                                                                              "AcceleratePlayer"),
                                                                                vec_(vec) {}
 
-   CallType release() override;
+    //This is the best solution I can think of for now
+    CallType operator()() override { return CallType::Error; }
 
-    CallType operator()() override;
-
-    CallType operator()(ResourceManager *, ObjectManager *) override { return CallType::Error; }
+    CallType operator()(bool released) override;
 
 private:
     phys::vec2 vec_;

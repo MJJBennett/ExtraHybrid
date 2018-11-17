@@ -2,10 +2,24 @@
 #include "Controls.h"
 #include "tools/MapUtils.h"
 
-bool Controls::execute(sf::Keyboard::Key key) {
-    if (key_consumer_ != nullptr) {
-        // consume_key returns true if they want to consume the next key, too
+bool Controls::execute(const sf::Event &event) {
+    key_released = false;
+    const auto key = [&]() {
+        switch (event.type) {
+            // Room for adding in more events here
+            case sf::Event::KeyReleased:
+                key_released = true;
+            case sf::Event::KeyPressed:
+                return event.key.code;
+            default:
+                return sf::Keyboard::Key::Unknown;
+        }
+    }();
+
+    if (!key_released && key_consumer_ != nullptr) {
+        // consume_key returns true if they want to consume the next key, too.
         // so greedy!
+        // currently only consumes key presses
         if (!(key_consumer_->consume_key(key))) {
             // Reset the consumer. We don't need to delete it, we don't own it.
             key_consumer_ = nullptr;
@@ -14,7 +28,7 @@ bool Controls::execute(sf::Keyboard::Key key) {
     }
 
     if (has(key)) {
-        logger_.prepend("[Key pressed: " + keyToString(key) + "] ");
+        logger_.prepend(key_released ? "[Key released: " : "[Key pressed: " + keyToString(key) + "] ");
         auto &action = *(actions_.at(key));
         return execute_action(action) != CallType::Error;
     }
@@ -35,37 +49,13 @@ CallType Controls::execute_action(Action &action, CallType call_type) {
     switch (call_type) {
         case CallType::Basic:
             logger_.write(Message("Executing: ", action.get_name()));
-            return execute_action(action, action());
+            return execute_action(action, action(key_released));
         case CallType::Full:
             return execute_action(action, action(r, o));
         case CallType::Logger:
             return execute_action(action, action(&logger_));
         case CallType::Controls:
             return execute_action(action, action(this));
-        default:
-            return CallType::Error;
-    }
-}
-
-CallType Controls::release_action(Action &action, CallType call_type) {
-    // If we want to do nothing, just return.
-    if (call_type == CallType::None || call_type == CallType::Error) return call_type;
-    // Check if we can execute this action.
-    if (!action.can_execute()) {
-        logger_.write(Message("Action could not be executed."));
-        return CallType::Error;
-    }
-    // Recursive switch statement.
-    switch (call_type) {
-        case CallType::Basic:
-            logger_.write(Message("Executing: ", action.get_name()));
-            return release_action(action, action.release());
-//        case CallType::Full:
-//            return release_action(action, action(r, o));
-//        case CallType::Logger:
-//            return release_action(action, action(&logger_));
-//        case CallType::Controls:
-//            return release_action(action, action(this));
         default:
             return CallType::Error;
     }
@@ -84,15 +74,3 @@ void Controls::maybe_erase(std::map<sf::Keyboard::Key, Action *>& map, sf::Keybo
 void Controls::rebind(sf::Keyboard::Key original, sf::Keyboard::Key updated) {
     change_key(actions_, original, updated);
 }
-
-bool Controls::release(sf::Keyboard::Key key) {
-    if (has(key)) {
-        logger_.prepend("[Key released: " + keyToString(key) + "] ");
-        auto &action = *(actions_.at(key));
-        return release_action(action) != CallType::Error;
-    }
-    else {
-        return false;
-    }
-}
-

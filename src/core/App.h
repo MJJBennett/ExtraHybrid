@@ -37,8 +37,6 @@ private:
 
     void process_event(const sf::Event &event);
 
-    void process_key_event(const sf::Keyboard::Key &key);
-
 private:
     // Private member variables.
     Logger<std::ostream> logger_;

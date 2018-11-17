@@ -35,12 +35,9 @@ public:
 
     void rebind(sf::Keyboard::Key original, sf::Keyboard::Key updated);
 
-    bool execute(sf::Keyboard::Key key);
-
-    bool release(sf::Keyboard::Key key);
+    bool execute(const sf::Event& event);
 
     CallType execute_action(Action &action, CallType call_type = CallType::Basic);
-    CallType release_action(Action &action, CallType call_type = CallType::Basic);
 
     ~Controls() {
         // TODO - Please make these unique_ptrs so that this isn't quite as awful.
@@ -57,6 +54,7 @@ private:
     void maybe_erase(std::map<sf::Keyboard::Key, Action *> &map, sf::Keyboard::Key key) const;
 
 private:
+    bool key_released = false;
 
     Logger<std::ostream> &logger_;
 
