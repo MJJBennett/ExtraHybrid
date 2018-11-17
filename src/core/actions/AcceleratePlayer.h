@@ -12,6 +12,8 @@ public:
                                                                                              "AcceleratePlayer"),
                                                                                vec_(vec) {}
 
+   CallType release() override;
+
     CallType operator()() override;
 
     CallType operator()(ResourceManager *, ObjectManager *) override { return CallType::Error; }

@@ -37,7 +37,10 @@ public:
 
     bool execute(sf::Keyboard::Key key);
 
+    bool release(sf::Keyboard::Key key);
+
     CallType execute_action(Action &action, CallType call_type = CallType::Basic);
+    CallType release_action(Action &action, CallType call_type = CallType::Basic);
 
     ~Controls() {
         // TODO - Please make these unique_ptrs so that this isn't quite as awful.

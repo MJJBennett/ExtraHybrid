@@ -35,7 +35,7 @@ void App::initialize() {
     c.set(sf::Keyboard::P, new CreatePlayer(o.get_player()));
 
     // Actual game functionality
-    const float base_acceleration = 20;
+    const float base_acceleration = 40;
     c.set(sf::Keyboard::D, new AcceleratePlayer(o.get_player(), phys::vec2{base_acceleration,0}));
     c.set(sf::Keyboard::W, new AcceleratePlayer(o.get_player(), phys::vec2{0,-base_acceleration}));
     c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player(), phys::vec2{-base_acceleration,0}));
@@ -63,8 +63,11 @@ void App::process_event(const sf::Event &event) {
         case sf::Event::Closed:
             w.close();
             return;
+        case sf::Event::KeyPressed:
+            c.execute(event.key.code);
+            return;
         case sf::Event::KeyReleased:
-            process_key_event(event.key.code);
+            c.release(event.key.code);
             return;
         default:
             return;

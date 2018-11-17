@@ -32,6 +32,10 @@ public:
 
     virtual bool can_execute() { return true; }
 
+    // Key for this action was released.
+    virtual CallType release() { return CallType::None; }
+
+    // Key for this action was pressed.
     virtual CallType operator()() = 0;
 
     virtual CallType operator()(ResourceManager *, ObjectManager *) { return CallType::Error; }

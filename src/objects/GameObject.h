@@ -14,6 +14,7 @@ public:
     // Positioning
     void shift_position(int x, int y);
     void accelerate(float x, float y);
+    void slow_x();
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -27,6 +28,7 @@ protected:
     PhysicsRect rect_;
     sf::Sprite sprite_;
     Timer timer_;
+    bool slowing = false;
 };
 
 

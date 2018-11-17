@@ -15,6 +15,15 @@ void PhysicsManager::update_object(GameObject& obj) {
     auto time = obj.timer_.get().asSeconds(); // Get the amount of time since the last update
     obj.timer_.restart(); // Restart the timer
 
+    if (obj.slowing) {
+        auto new_vel = float(obj.rect_.x_velocity() * 0.1);
+        if (new_vel < 0.1) {
+            obj.rect_.x_velocity(0);
+            obj.slowing = false;
+        }
+        else obj.rect_.x_velocity(new_vel);
+    }
+
     // Calculate physics update information
     auto delta_x = time * obj.rect_.x_velocity();
     auto delta_y = time * obj.rect_.y_velocity();
