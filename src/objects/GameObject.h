@@ -16,6 +16,8 @@ public:
     void accelerate(float x, float y);
     void slow_x();
 
+    const PhysicsRect& get_rect() const { return rect_; }
+
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
         target.draw(sprite_, states);

@@ -37,7 +37,7 @@ void App::initialize() {
     // Actual game functionality
     const float base_acceleration = 40;
     c.set(sf::Keyboard::D, new AcceleratePlayer(o.get_player(), phys::vec2{base_acceleration,0}));
-    c.set(sf::Keyboard::W, new AcceleratePlayer(o.get_player(), phys::vec2{0,-base_acceleration}));
+    c.set(sf::Keyboard::W, new AcceleratePlayer(o.get_player(), phys::vec2{0,-base_acceleration*5}));
     c.set(sf::Keyboard::A, new AcceleratePlayer(o.get_player(), phys::vec2{-base_acceleration,0}));
     c.set(sf::Keyboard::S, new AcceleratePlayer(o.get_player(), phys::vec2{0,base_acceleration}));
 }

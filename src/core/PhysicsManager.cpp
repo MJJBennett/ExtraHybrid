@@ -10,7 +10,7 @@ void PhysicsManager::update_object(GameObject& obj) {
         int y_max_vel = 100;
         int x_max_vel = 80;
     } bounds;
-    const float y_acceleration = 25;
+    const float y_acceleration = 40;
 
     auto time = obj.timer_.get().asSeconds(); // Get the amount of time since the last update
     obj.timer_.restart(); // Restart the timer
@@ -43,11 +43,14 @@ void PhysicsManager::update_object(GameObject& obj) {
             obj.rect_.x_velocity(0);
         }
 
-        if (new_y < bounds.y_min) {
-            new_y = bounds.y_min;
-            obj.rect_.y_velocity(0);
-        } else if (new_y + obj.rect_.rect_.h > bounds.y_max) {
+        if (new_y + obj.rect_.rect_.h >= bounds.y_max) {
             new_y = bounds.y_max - obj.rect_.rect_.h;
+            obj.rect_.y_velocity(0);
+            obj.rect_.on_ground = true;
+        } else obj.rect_.on_ground = false;
+
+        if (new_y <= bounds.y_min) {
+            new_y = bounds.y_min;
             obj.rect_.y_velocity(0);
         }
 
