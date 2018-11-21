@@ -5,6 +5,8 @@
 #include "PhysicsRect.h"
 #include "tools/Timer.h"
 
+class Health;
+
 class GameObject : public sf::Drawable {
     friend class PhysicsManager;
 public:
@@ -17,6 +19,8 @@ public:
     void slow_x();
 
     const PhysicsRect& get_rect() const { return rect_; }
+
+    virtual std::optional<Health&> get_health() const { return {}; }
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {

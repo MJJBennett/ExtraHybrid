@@ -1,6 +1,8 @@
 #ifndef NOVEMBERGAMEJAM_LOGPLAYER_H
 #define NOVEMBERGAMEJAM_LOGPLAYER_H
 
+#include <objects/Player.h>
+
 #include "Action.h"
 
 class LogPlayer : public SubjectAction<Player> {
